@@ -13,7 +13,7 @@ import AdminDashboard from "./pages-admin/AdminDashboard1";
 import AddProduct from "./pages-admin/AddProduct";
 import ProductList from "./pages-admin/ProductList";
 import EditProduct from "./pages-admin/EditProduct";
-import OrderDetailsPage from "./pages-admin/Orderdetailspage";
+import Orderdetailspage from "./pages-admin/Orderdetailspage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import UserLayout from "./layouts/UserLayout";
