@@ -64,7 +64,7 @@ export default function Signup() {
 
     try {
       // ✅ FIXED: Changed http:// to https:// to prevent Mixed Content blocking
-      const response = await fetch("https://fuku-system.rf.gd/api/register.php", {
+      const response = await fetch("http://fuku-system.rf.gd/api/register.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
