@@ -1,17 +1,28 @@
 <?php
 session_start();
 
-header("Access-Control-Allow-Origin: http://localhost:5173");
+/* ───────────────── CORS ───────────────── */
+$allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174"
+];
+
+if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowedOrigins)) {
+    header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+}
+
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Content-Type: application/json");
 
+/* ───────────────── PREFLIGHT ───────────────── */
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
+/* ───────────────── DATABASE ───────────────── */
 $conn = new mysqli("localhost", "root", "", "fuku");
 
 if ($conn->connect_error) {
@@ -22,11 +33,13 @@ if ($conn->connect_error) {
     exit();
 }
 
+/* ───────────────── GET DATA ───────────────── */
 $data = json_decode(file_get_contents("php://input"), true);
 
 $username = trim($data['username'] ?? '');
 $password = trim($data['password'] ?? '');
 
+/* ───────────────── VALIDATION ───────────────── */
 if (empty($username) || empty($password)) {
     echo json_encode([
         "success" => false,
@@ -35,49 +48,51 @@ if (empty($username) || empty($password)) {
     exit();
 }
 
-$stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+/* ───────────────── LOGIN ───────────────── */
+$stmt = $conn->prepare("SELECT id, username, password, role FROM users WHERE username = ?");
 $stmt->bind_param("s", $username);
 $stmt->execute();
 
 $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-
-    $user = $result->fetch_assoc();
-
-    if (password_verify($password, $user['password'])) {
-
-        
-        session_regenerate_id(true);
-
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-
-        echo json_encode([
-            "success" => true,
-            "message" => "Login successful",
-            "user_id" => $user['id'],
-            "username" => $user['username'],
-            "role" => $user['role']
-        ]);
-
-    } else {
-
-        echo json_encode([
-            "success" => false,
-            "message" => "Incorrect password"
-        ]);
-
-    }
-
-} else {
+if ($result->num_rows === 0) {
 
     echo json_encode([
         "success" => false,
         "message" => "User not found"
     ]);
 
+    exit();
 }
+
+$user = $result->fetch_assoc();
+
+/* ───────────────── VERIFY PASSWORD ───────────────── */
+if (!password_verify($password, $user['password'])) {
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Incorrect password"
+    ]);
+
+    exit();
+}
+
+/* ───────────────── SESSION ───────────────── */
+session_regenerate_id(true);
+
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['username'] = $user['username'];
+$_SESSION['role'] = $user['role'];
+
+/* ───────────────── SUCCESS RESPONSE ───────────────── */
+echo json_encode([
+    "success" => true,
+    "message" => "Login successful",
+    "user_id" => $user['id'],
+    "username" => $user['username'],
+    "role" => $user['role'] ?: "user"
+]);
 
 $stmt->close();
 $conn->close();

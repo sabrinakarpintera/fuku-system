@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./style/MyAccount.css";
 
 const API = "http://localhost/fuku/src/api";
@@ -54,7 +55,27 @@ function FieldRow({ label, value, saved, type = "text", onSave }) {
   const handleCancel = () => { setDraft(value); setError(""); setEditing(false); };
 
   const handleSave = async () => {
-    if (isEmpty(draft)) { setError(`${label} is required.`); return; }
+    if (isEmpty(draft)) {
+      setError(`${label} is required.`);
+      return;
+    }
+
+    if (label === "Email") {
+      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      if (!gmailRegex.test(draft.trim())) {
+        setError("Only @gmail.com email addresses are allowed.");
+        return;
+      }
+    }
+
+    if (label === "Contact number") {
+      const phoneRegex = /^09\d{9}$/;
+      if (!phoneRegex.test(draft.trim())) {
+        setError("Phone number must be 11 digits and start with 09.");
+        return;
+      }
+    }
+
     setLoading(true);
     const ok = await onSave(draft.trim());
     setLoading(false);
@@ -76,6 +97,15 @@ function FieldRow({ label, value, saved, type = "text", onSave }) {
             onChange={(e) => { setDraft(e.target.value); setError(""); }}
             placeholder={label}
             autoFocus
+            pattern={label === "Contact number" ? "09\\d{9}" : undefined}
+            maxLength={label === "Contact number" ? 11 : undefined}
+            title={
+              label === "Email"
+                ? "Only @gmail.com email addresses are allowed."
+                : label === "Contact number"
+                ? "Phone number must be 11 digits and start with 09."
+                : undefined
+            }
           />
           {error && <p className="field-error">{error}</p>}
           <div className="field-actions">
@@ -248,6 +278,12 @@ function AddressSection({ saved, onSave }) {
 
 export default function MyAccount() {
   const { toasts, show: showToast, dismiss } = useToasts();
+  const location = useLocation();
+  const navigate  = useNavigate();
+
+  // Detect if we came from the checkout "Edit" button
+  const returnToCheckout = location.state?.returnToCheckout ?? false;
+  const checkoutState    = location.state?.checkoutState    ?? null;
 
   const [saved, setSaved] = useState({
     name: "", email: "", phone: "",
@@ -278,6 +314,14 @@ export default function MyAccount() {
     if (result.success) {
       setSaved((prev) => ({ ...prev, ...patch }));
       showToast("Saved successfully!", "success");
+
+      // If we came from checkout, go back there after a short delay
+      if (returnToCheckout && checkoutState) {
+        setTimeout(() => {
+          navigate("/checkout", { state: checkoutState });
+        }, 1200);
+      }
+
       return true;
     } else {
       showToast(result.error || "Update failed.", "error");
@@ -291,18 +335,35 @@ export default function MyAccount() {
   const saveAddress = ({ regionName, provinceName, cityName, barangayName, street }) =>
     partialSave({ region: regionName, province: provinceName, city: cityName, barangay: barangayName, street });
 
+  // Back button: return to checkout (preserving cart) or dashboard
+  const handleBack = () => {
+    if (returnToCheckout && checkoutState) {
+      navigate("/checkout", { state: checkoutState });
+    } 
+  };
+
   return (
     <>
       <ToastContainer toasts={toasts} onDismiss={dismiss} />
 
       <div className="account-container">
         <div className="page-header">
-          <a href="/dashboard" className="back-btn" aria-label="Back to dashboard">
+          <button className="back-btn" onClick={handleBack} aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
-          </a>
+          </button>
           <h1 className="title">My Account</h1>
+
+          {/* Banner shown when the user arrived from checkout */}
+          {returnToCheckout && (
+            <button
+              className="return-checkout-btn"
+              onClick={() => navigate("/checkout", { state: checkoutState })}
+            >
+            </button>
+          )}
         </div>
         <hr />
+
 
         <h2 className="section-title">Account Details</h2>
 

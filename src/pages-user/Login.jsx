@@ -107,10 +107,18 @@ function ForgotPasswordModal({ onClose }) {
   // ── Step 3: Reset Password
   const handleResetPassword = async () => {
     clearMsg();
-    if (newPassword.length < 8)
-      return setMsg("error", "Password must be at least 8 characters.");
+
+    // ✅ Same strong password rule as Signup
+    const strongPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])\S{8,}$/;
+    if (!strongPass.test(newPassword))
+      return setMsg(
+        "error",
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+      );
+
     if (newPassword !== confirmPassword)
       return setMsg("error", "Passwords do not match.");
+
     setLoading(true);
     try {
       const res = await fetch(API, {
@@ -270,32 +278,54 @@ export default function Login() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      const response = await fetch("http://localhost/Fuku/src/api/login.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(form),
-      });
-      const data = await response.json();
-      if (data.success) {
-        localStorage.clear();
-        const userData = { id: data.user_id, username: data.username, role: data.role || "user" };
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("user_id", data.user_id);
-        if (userData.role === "admin") navigate("/admin/dashboard");
-        else navigate("/dashboard");
+  e.preventDefault();
+
+  setLoading(true);
+  setMessage("");
+
+  try {
+    const response = await fetch("http://localhost/Fuku/src/api/login.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(form),
+    });
+
+    const data = await response.json();
+
+    console.log("LOGIN RESPONSE:", data);
+
+    if (data.success) {
+
+      const userData = {
+        id: data.user_id,
+        username: data.username,
+        role: data.role || "user",
+      };
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("user_id", data.user_id);
+
+      // force redirect
+      if (userData.role === "admin") {
+        window.location.href = "/admin/dashboard";
       } else {
-        setMessage(data.message);
+        window.location.href = "/dashboard";
       }
-    } catch {
-      setMessage("Server error. Try again.");
+
+    } else {
+      setMessage(data.message || "Login failed");
     }
-    setLoading(false);
-  };
+
+  } catch (error) {
+    console.error(error);
+    setMessage("Server error. Try again.");
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="signBody">

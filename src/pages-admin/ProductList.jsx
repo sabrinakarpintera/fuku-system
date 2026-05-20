@@ -1,25 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./style/ProductList.css";
 import logoImage from "../assets/fuku-logo.png";
 
 const Icon = ({ name }) => <span className="material-icons">{name}</span>;
 
-const STATUS = (qty) => {
-  if (qty === 0) return { label: "Sold Out", cls: "badge-soldout" };
-  if (qty <= 10) return { label: "Low Stock", cls: "badge-low" };
+const formatPrice = (amount) =>
+  "₱" + Number(amount).toLocaleString("en-PH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+const STATUS = (stock) => {
+  const n = Number(stock);
+  if (n <= 0)  return { label: "Sold Out", cls: "badge-soldout" };
+  if (n <= 10) return { label: "Low Stock", cls: "badge-low" };
   return { label: "In Stock", cls: "badge-instock" };
 };
 
+function aggregateVariants(variants, filterSize, filterColor) {
+  const rows = variants.filter((v) => {
+    const sizeMatch  = !filterSize  || v.size  === filterSize;
+    const colorMatch = !filterColor || v.color === filterColor;
+    return sizeMatch && colorMatch;
+  });
+  return {
+    stock:   rows.reduce((s, v) => s + v.stock,   0),
+    sold:    rows.reduce((s, v) => s + v.sold,    0),
+    revenue: rows.reduce((s, v) => s + v.revenue, 0),
+  };
+}
+
 export default function ProductList() {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null);
+  const [products,      setProducts]      = useState([]);
+  const [loading,       setLoading]       = useState(true);
+  const [selected,      setSelected]      = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [search,        setSearch]        = useState("");
+  const [categoryFilter,setCategoryFilter]= useState("ALL");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const [activeSize,  setActiveSize]  = useState(null);
+  const [activeColor, setActiveColor] = useState(null);
 
   const currentPath = "/admin/productlist";
 
@@ -29,42 +52,40 @@ export default function ProductList() {
     navigate("/login");
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { fetchProducts(); }, []);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost/Fuku/src/api/ad_get_products.php");
+      const res  = await fetch("http://localhost/Fuku/src/api/ad_get_products.php");
       const data = await res.json();
       setProducts(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { console.error(err); }
+    finally { setLoading(false); }
   };
 
   const openDetail = async (id) => {
     setDetailLoading(true);
     setSelected(null);
+    setActiveSize(null);
+    setActiveColor(null);
     try {
-      const res = await fetch(`http://localhost/Fuku/src/api/ad_get_product.php?id=${id}`);
+      const res  = await fetch(`http://localhost/Fuku/src/api/ad_get_product.php?id=${id}`);
       const data = await res.json();
       setSelected(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setDetailLoading(false);
-    }
+    } catch (err) { console.error(err); }
+    finally { setDetailLoading(false); }
   };
 
-  const closeDetail = () => setSelected(null);
+  const closeDetail = () => {
+    setSelected(null);
+    setActiveSize(null);
+    setActiveColor(null);
+  };
 
   const handleDelete = async (id) => {
     try {
-      const res = await fetch("http://localhost/Fuku/src/api/delete_product.php", {
+      const res  = await fetch("http://localhost/Fuku/src/api/delete_product.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
@@ -75,34 +96,56 @@ export default function ProductList() {
         setSelected(null);
         setDeleteConfirm(null);
       }
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
+
+  const variantStats = useMemo(() => {
+    if (!selected?.variants) return null;
+    return aggregateVariants(selected.variants, activeSize, activeColor);
+  }, [selected, activeSize, activeColor]);
+
+  const displayStats = useMemo(() => {
+    if (!selected) return null;
+    const hasFilter = activeSize || activeColor;
+    return hasFilter && variantStats
+      ? variantStats
+      : {
+          stock:   selected.current_stock,
+          sold:    selected.sold,
+          revenue: selected.revenue,
+        };
+  }, [selected, activeSize, activeColor, variantStats]);
+
+  const filterLabel = useMemo(() => {
+    if (!activeSize && !activeColor) return "All variants";
+    if (activeSize  && activeColor)  return `${activeSize} · ${activeColor}`;
+    if (activeSize)                  return `Size: ${activeSize}`;
+    return `Color: ${activeColor}`;
+  }, [activeSize, activeColor]);
 
   const CATEGORIES = ["ALL", "MEN", "WOMEN", "KIDS"];
 
   const filtered = products.filter((p) => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchCat = categoryFilter === "ALL" || p.category === categoryFilter;
+    const matchCat    = categoryFilter === "ALL" || p.category === categoryFilter;
     return matchSearch && matchCat;
   });
 
   const navItems = [
-    { label: "Home", icon: "home", path: "/admin/dashboard" },
-    
-    { label: "Product Listed", icon: "inventory_2", path: "/admin/productlist" },
-    { label: "Order Details", icon: "receipt_long", path: "/admin/orderdetails" },
+    { label: "Home",           icon: "home",         path: "/admin/dashboard"   },
+    { label: "Product Listed", icon: "inventory_2",  path: "/admin/productlist" },
+    { label: "Order Details",  icon: "receipt_long", path: "/admin/orderdetails"},
   ];
+
+  const toggleSize  = (size)  => setActiveSize( (prev) => (prev === size  ? null : size));
+  const toggleColor = (color) => setActiveColor((prev) => (prev === color ? null : color));
 
   return (
     <div className="admin-root">
 
       <header className="admin-header">
         <div className="admin-header-inner">
-          <span className="logo">
-            <img src={logoImage} alt="Fuku Logo" />
-          </span>
+          <span className="logo"><img src={logoImage} alt="Fuku Logo" /></span>
 
           <nav className="admin-nav">
             {navItems.map((item) => (
@@ -118,8 +161,7 @@ export default function ProductList() {
           </nav>
 
           <button className="signout-btn" onClick={handleLogout}>
-            <Icon name="logout" />
-            <span>Sign Out</span>
+            <Icon name="logout" /><span>Sign Out</span>
           </button>
         </div>
       </header>
@@ -171,7 +213,7 @@ export default function ProductList() {
         ) : (
           <div className="pl-grid">
             {filtered.map((p) => {
-              const status = STATUS(Number(p.quantity));
+              const status = STATUS(p.current_stock);
               return (
                 <div className="pl-card" key={p.id} onClick={() => openDetail(p.id)}>
                   <div className="pl-card-img-wrap">
@@ -186,8 +228,8 @@ export default function ProductList() {
                     <span className="pl-card-cat">{p.category}</span>
                     <h3 className="pl-card-name">{p.name}</h3>
                     <div className="pl-card-footer">
-                      <span className="pl-card-price">₱{Number(p.price).toLocaleString()}</span>
-                      <span className="pl-card-qty">Qty: {p.quantity}</span>
+                      <span className="pl-card-price">{formatPrice(p.price)}</span>
+                      <span className="pl-card-qty">Stock: {p.current_stock}</span>
                     </div>
                   </div>
                 </div>
@@ -196,16 +238,15 @@ export default function ProductList() {
           </div>
         )}
 
+        {/* ── Product Detail Modal ── */}
         {(selected || detailLoading) && (
           <div className="pl-overlay" onClick={closeDetail}>
             <div className="pl-modal" onClick={(e) => e.stopPropagation()}>
               <button className="pl-modal-close" onClick={closeDetail}>✕</button>
 
               {detailLoading ? (
-                <div className="pl-loading">
-                  <div className="pl-spinner" />
-                </div>
-              ) : selected && (
+                <div className="pl-loading"><div className="pl-spinner" /></div>
+              ) : selected && displayStats && (
                 <>
                   <div className="pm-top">
                     <div className="pm-img-wrap">
@@ -218,12 +259,12 @@ export default function ProductList() {
                     <div className="pm-info">
                       <div className="pm-meta">
                         <span className="pm-cat-badge">{selected.category}</span>
-                        <span className={`pl-badge ${STATUS(Number(selected.quantity)).cls}`}>
-                          {STATUS(Number(selected.quantity)).label}
+                        <span className={`pl-badge ${STATUS(displayStats.stock).cls}`}>
+                          {STATUS(displayStats.stock).label}
                         </span>
                       </div>
                       <h2 className="pm-name">{selected.name}</h2>
-                      <p className="pm-price">₱{Number(selected.price).toLocaleString()}</p>
+                      <p className="pm-price">{formatPrice(selected.price)}</p>
                       <p className="pm-desc">{selected.description || "No description provided."}</p>
 
                       <div className="pm-tags-section">
@@ -231,22 +272,35 @@ export default function ProductList() {
                           <span className="pm-tag-label">Sizes</span>
                           <div className="pm-tags">
                             {selected.sizes?.length > 0
-                              ? selected.sizes.map((s, i) => <span className="pm-tag" key={i}>{s}</span>)
+                              ? selected.sizes.map((s) => (
+                                  <button
+                                    key={s}
+                                    type="button"
+                                    className={`pm-tag pm-tag-btn ${activeSize === s ? "pm-tag--active" : ""}`}
+                                    onClick={() => toggleSize(s)}
+                                  >{s}</button>
+                                ))
                               : <span className="pm-no-tag">None</span>}
                           </div>
                         </div>
+
                         <div className="pm-tag-group">
                           <span className="pm-tag-label">Colors</span>
                           <div className="pm-tags">
                             {selected.colors?.length > 0
-                              ? selected.colors.map((c, i) => (
-                                  <span className="pm-tag pm-color-tag" key={i}>
+                              ? selected.colors.map((c) => (
+                                  <button
+                                    key={c}
+                                    type="button"
+                                    className={`pm-tag pm-color-tag pm-tag-btn ${activeColor === c ? "pm-tag--active" : ""}`}
+                                    onClick={() => toggleColor(c)}
+                                  >
                                     <span
                                       className="pm-color-dot"
                                       style={{ background: c.toLowerCase() }}
                                     />
                                     {c}
-                                  </span>
+                                  </button>
                                 ))
                               : <span className="pm-no-tag">None</span>}
                           </div>
@@ -255,25 +309,38 @@ export default function ProductList() {
                     </div>
                   </div>
 
+                  {/* ── Stats ── */}
+                  <div className="pm-stats-header">
+                    <span className="pm-stats-filter-label">
+                      Showing: <strong>{filterLabel}</strong>
+                    </span>
+                    {(activeSize || activeColor) && (
+                      <button
+                        className="pm-stats-reset"
+                        onClick={() => { setActiveSize(null); setActiveColor(null); }}
+                      >
+                        Reset filter
+                      </button>
+                    )}
+                  </div>
+
                   <div className="pm-stats">
                     <div className="pm-stat">
                       <span className="pm-stat-label">Current Stock</span>
-                      <span className="pm-stat-value">{selected.quantity}</span>
+                      <span className="pm-stat-value">{displayStats.stock}</span>
                     </div>
                     <div className="pm-stat">
                       <span className="pm-stat-label">Items Sold</span>
-                      <span className="pm-stat-value">{selected.sold ?? 0}</span>
+                      <span className="pm-stat-value">{displayStats.sold}</span>
                     </div>
                     <div className="pm-stat">
                       <span className="pm-stat-label">Total Revenue</span>
-                      <span className="pm-stat-value">
-                        ₱{((selected.sold ?? 0) * Number(selected.price)).toLocaleString()}
-                      </span>
+                      <span className="pm-stat-value">{formatPrice(displayStats.revenue)}</span>
                     </div>
                     <div className="pm-stat">
                       <span className="pm-stat-label">Status</span>
-                      <span className={`pm-stat-status ${STATUS(Number(selected.quantity)).cls}`}>
-                        {STATUS(Number(selected.quantity)).label}
+                      <span className={`pm-stat-status ${STATUS(displayStats.stock).cls}`}>
+                        {STATUS(displayStats.stock).label}
                       </span>
                     </div>
                   </div>
@@ -281,7 +348,7 @@ export default function ProductList() {
                   <div className="pm-actions">
                     <button
                       className="pm-btn-edit"
-                      onClick={() => navigate(`/admin/edit-product/${selected.id}`)}
+                      onClick={() => navigate(`/admin/editProduct/${selected.id}`)}
                     >
                       ✎ Edit Product
                     </button>
@@ -298,6 +365,7 @@ export default function ProductList() {
           </div>
         )}
 
+        {/* ── Delete Confirm ── */}
         {deleteConfirm && (
           <div className="pl-overlay">
             <div className="pl-confirm">

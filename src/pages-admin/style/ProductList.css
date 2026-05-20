@@ -540,6 +540,60 @@
   gap: 12px;
 }
 
+/* ── Clickable size/color tags ── */
+.pm-tag-btn {
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  transition: all 0.15s ease;
+  font-size: 0.8rem;
+  font-family: inherit;
+}
+
+.pm-tag-btn:hover {
+  border-color: #c8a98a;
+  background: #fdf6ef;
+}
+
+.pm-tag--active {
+  background: #c8a98a !important;
+  color: #fff !important;
+  border-color: #c8a98a !important;
+}
+
+.pm-tag--active .pm-color-dot {
+  border-color: rgba(255,255,255,0.6);
+}
+
+/* ── Stats filter header ── */
+.pm-stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 6px;
+  padding: 0 2px;
+}
+
+.pm-stats-filter-label {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.pm-stats-reset {
+  font-size: 0.78rem;
+  color: #c8a98a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+  padding: 0;
+}
+
+.pm-stats-reset:hover {
+  color: #a07850;
+}
+
 @media (max-width: 700px) {
   .pl-wrapper { padding: 20px 16px; }
   .pm-top { grid-template-columns: 1fr; }

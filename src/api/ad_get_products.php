@@ -1,19 +1,43 @@
 <?php
-
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 $conn = new mysqli("localhost", "root", "", "fuku");
-
 if ($conn->connect_error) {
     echo json_encode(["error" => "Connection failed"]);
     exit;
 }
 
+// ✅ current_stock = sum of product_variants (not quantity - sold)
+// ✅ sold & revenue = real-time from order_items, excluding Cancelled
 $result = $conn->query("
-    SELECT id, name, price, description, quantity, image, category, sold
-    FROM products
-    ORDER BY id DESC
+    SELECT
+        p.id,
+        p.name,
+        p.price,
+        p.description,
+        p.quantity,
+        p.image,
+        p.category,
+        (
+            SELECT COALESCE(SUM(pv.quantity), 0)
+            FROM product_variants pv
+            WHERE pv.product_id = p.id
+        ) AS current_stock,
+        (
+            SELECT COALESCE(SUM(oi.quantity), 0)
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            WHERE oi.product_name = p.name AND o.status != 'Cancelled'
+        ) AS sold,
+        (
+            SELECT COALESCE(SUM(oi.quantity * oi.price), 0)
+            FROM order_items oi
+            JOIN orders o ON o.id = oi.order_id
+            WHERE oi.product_name = p.name AND o.status != 'Cancelled'
+        ) AS revenue
+    FROM products p
+    ORDER BY p.id DESC
 ");
 
 $products = [];
@@ -22,6 +46,5 @@ while ($row = $result->fetch_assoc()) {
 }
 
 echo json_encode($products);
-
 $conn->close();
 ?>

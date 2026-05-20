@@ -213,13 +213,41 @@ body {
   max-height: 88vh; 
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(44,26,14,.25);
+  position: relative;
+}
+
+.modal-close-x {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--brown-dark);
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.modal-close-x:hover {
+  background: var(--brown-mid);
+  transform: scale(1.1);
 }
 
 .modal-header { 
   display: flex; 
   justify-content: space-between; 
   align-items: flex-start; 
-  margin-bottom: 24px; 
+  margin-bottom: 24px;
+  padding-right: 40px;
 }
 
 .modal-title { 
@@ -232,19 +260,6 @@ body {
   font-size: 13px; 
   color: var(--text-muted); 
   margin-top: 4px; 
-}
-
-.close-btn { 
-  background: none; 
-  border: none; 
-  font-size: 18px; 
-  cursor: pointer; 
-  color: var(--text-muted); 
-  padding: 4px; 
-}
-
-.close-btn:hover { 
-  color: var(--brown-dark); 
 }
  
 .tracker { 
@@ -322,7 +337,7 @@ body {
   margin-bottom: 24px; 
 }
  
-/* MODAL ITEMS */
+/* ── MODAL ITEMS ─────────────────────────────────────────── */
 .modal-items { 
   display: flex; 
   flex-direction: column; 
@@ -339,13 +354,26 @@ body {
   padding: 14px; 
 }
 
-.item-thumb { 
-  width: 60px; 
-  height: 60px; 
-  border-radius: 8px; 
-  background: var(--border); 
-  flex-shrink: 0;
+/* FIX: target both the class and the bare img tag so size is always enforced */
+.item-thumb,
+.modal-item img {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;   /* prevents flex from shrinking it */
+  border-radius: 8px;
+  background: var(--border);
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Fallback placeholder when image is null */
+.img-placeholder {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 8px;
+  background: var(--border);
+  flex-shrink: 0;
 }
 
 .item-info { flex: 1; }
@@ -368,7 +396,7 @@ body {
   color: var(--brown-dark); 
 }
  
-/* SUMMARY */
+/* ── SUMMARY ─────────────────────────────────────────────── */
 .summary { 
   background: var(--card); 
   border-radius: 12px; 
@@ -414,7 +442,7 @@ body {
   color: var(--white); 
 }
  
-/* CONFIRM DIALOG */
+/* ── CONFIRM DIALOG ──────────────────────────────────────── */
 .confirm {
   background: var(--cream); 
   border-radius: 16px; 
@@ -470,4 +498,413 @@ body {
 
 .btn-confirm-cancel:hover { 
   background: var(--brown-mid); 
+}
+
+/* ── CONFIRM DELIVERY BUTTON ─────────────────────────────── */
+.btn-confirm-delivery {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+
+.btn-confirm-delivery.enabled {
+  background: var(--brown-dark);
+  color: var(--white);
+}
+
+.btn-confirm-delivery.enabled:hover {
+  background: var(--brown-mid);
+}
+
+.btn-confirm-delivery.disabled {
+  background: var(--border);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Add to OrderManagement.css */
+
+/* "Write a Review" variant of the confirm-delivery button */
+.btn-write-review {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+}
+
+.btn-write-review:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* ── THANK YOU CARD ──────────────────────────────────────── */
+.thankyou-card {
+  background: var(--cream);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(44, 26, 14, 0.28);
+  animation: popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.thankyou-icon {
+  font-size: 52px;
+  margin-bottom: 16px;
+}
+
+.thankyou-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: var(--brown-dark);
+  margin-bottom: 12px;
+}
+
+.thankyou-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.thankyou-btn {
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  background: var(--brown-dark);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.thankyou-btn:hover {
+  background: var(--brown-mid);
+}
+
+/* ── COMPLETED BADGE ─────────────────────────────────────── */
+.badge-completed {
+  background: #e8d5f5;
+  color: #5b2d8e;
+}
+
+/* ── Paste these additions into your existing OrderManagement.css ── */
+
+/* "To Review" badge */
+.badge-toreview {
+  background: #fff7ed;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+/* Review button in the action column */
+.btn-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-review:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+/* "Completed" banner inside order detail modal */
+.completed-banner {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* ── Paste these at the bottom of OrderManagement.css ── */
+
+/* Refund badge */
+.badge-refund {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+/* Refund button in table row */
+.btn-refund {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: background 0.15s;
+}
+.btn-refund:hover {
+  background: #ffc107;
+  color: #fff;
+}
+
+/* Side-by-side CTAs inside the detail modal */
+.modal-cta-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.modal-cta-row .btn-confirm-delivery {
+  flex: 1;
+}
+
+/* Refund button inside the detail modal */
+.btn-refund-modal {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1.5px solid #ffc107;
+  background: #fff3cd;
+  color: #856404;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-refund-modal:hover {
+  background: #ffc107;
+  color: #fff;
+}
+
+/* Banners */
+.refund-requested-banner {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.refund-pending-note {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: #856404;
+  background: #fffbea;
+  border-left: 3px solid #ffc107;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+/* ── Refund Modal ── */
+.refund-modal {
+  max-width: 480px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.refund-intro {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.refund-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.refund-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.refund-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+.refund-field .req {
+  color: #e53e3e;
+}
+.refund-field input,
+.refund-field select,
+.refund-field textarea {
+  padding: 9px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+  font-family: inherit;
+  resize: vertical;
+}
+.refund-field input:focus,
+.refund-field select:focus,
+.refund-field textarea:focus {
+  border-color: #555;
+}
+
+.refund-divider {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.refund-wallet-group {
+  display: flex;
+  gap: 10px;
+}
+.refund-wallet-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.refund-wallet-btn.selected {
+  border-color: #333;
+  background: #333;
+  color: #fff;
+}
+
+.refund-error {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.btn-submit-refund {
+  width: 100%;
+  padding: 13px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+.btn-submit-refund:hover:not(:disabled) {
+  background: #111;
+}
+.btn-submit-refund:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Image upload zone ── */
+.refund-label-hint {
+  font-weight: 400;
+  color: #999;
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+
+.refund-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 2px dashed #ddd;
+  border-radius: 10px;
+  padding: 20px 12px;
+  cursor: pointer;
+  color: #888;
+  font-size: 0.88rem;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+}
+.refund-upload-zone:hover {
+  border-color: #aaa;
+  background: #fafafa;
+}
+.refund-upload-icon {
+  font-size: 2rem;
+  color: #bbb;
+}
+.refund-upload-sub {
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+/* ── Preview grid ── */
+.refund-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.refund-preview-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid #ddd;
+}
+.refund-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.refund-preview-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.refund-preview-remove:hover {
+  background: rgba(0,0,0,0.8);
 }

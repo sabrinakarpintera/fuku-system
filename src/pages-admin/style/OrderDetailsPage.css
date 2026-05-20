@@ -1,0 +1,702 @@
+/* ─────────────────────────────────────────────────────────────────
+   OrderDetailsPage.css
+   Styles exclusive to OrderDetailsPage — import alongside
+   AdminDashboard1.css (which provides the shared base).
+───────────────────────────────────────────────────────────────── */
+
+/* ─── PAGE WRAPPER ─── */
+.page-orders {
+  animation: fadeUp 0.3s ease;
+}
+
+/* ─── FILTER ROW ─── */
+.filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  border: 1.5px solid var(--beige-border);
+  background: var(--beige-card);
+  color: var(--text-mid);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-btn:hover {
+  border-color: var(--brown-light);
+  color: var(--brown-dark);
+}
+
+.filter-btn--active {
+  background: var(--brown-dark);
+  color: var(--white);
+  border-color: var(--brown-dark);
+}
+
+/* ─── TABLE ACTION COLUMN ─── */
+.action-cell {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-view {
+  padding: 6px 16px;
+  border: 1.5px solid var(--brown-dark);
+  background: transparent;
+  color: var(--brown-dark);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.action-view:hover {
+  background: var(--brown-dark);
+  color: var(--white);
+}
+
+/* ─── COMPLETED / RECEIVED STATUS BADGE ─── */
+.status-completed {
+  background: #ede8f8;
+  color: #5b2d8e;
+}
+
+/* ─── MANAGE ORDER STATUS SECTION ─── */
+.status-actions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.status-actions-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-actions-label .material-icons { font-size: 15px; }
+
+.status-actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.status-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.status-action-btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.status-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status-action-btn .material-icons { font-size: 17px; }
+
+.status-action-ship    { background: #e8f4fd; color: #1565c0; }
+.status-action-deliver { background: #e8f5e9; color: #2e7d32; }
+.status-action-cancel  { background: #fdecea; color: #c62828; }
+
+/* ─── CONFIRM DIALOG ─── */
+.confirm-overlay { z-index: 1200; }
+
+.confirm-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px 24px;
+  max-width: 380px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+}
+
+.confirm-icon-wrap {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.confirm-icon-wrap .material-icons { font-size: 30px; }
+
+.confirm-icon-proceed { background: #e8f5e9; color: #2e7d32; }
+.confirm-icon-cancel  { background: #fdecea; color: #c62828; }
+
+.confirm-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  margin: 0;
+}
+
+.confirm-desc {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.confirm-btn-no {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirm-btn-no:hover:not(:disabled) { background: #f5f5f5; }
+
+.confirm-btn-yes {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #1a1a2e;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: opacity 0.2s;
+}
+
+.confirm-btn-yes:hover:not(:disabled) { opacity: 0.85; }
+.confirm-btn-yes--danger { background: #c62828; }
+
+.confirm-btn-yes:disabled,
+.confirm-btn-no:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── PAYMENT VERIFICATION MODAL ─── */
+.modal-payment-verify-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.payment-verify-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #1a1a2e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.payment-verify-btn:hover { background: #16213e; }
+.payment-verify-btn .material-icons { font-size: 18px; }
+
+.payment-verify-overlay { z-index: 1100; }
+.payment-verify-box { max-width: 460px; width: 100%; }
+
+.payment-verify-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-verify-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.payment-verify-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-verify-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  padding-left: 4px;
+}
+
+.payment-verify-proof {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.payment-verify-img-wrap {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f9fafb;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-verify-img {
+  width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  display: block;
+}
+
+.payment-verify-img-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #aaa;
+  font-size: 0.85rem;
+  padding: 40px 0;
+}
+
+/* ─── 4-STEP TRACKING OVERRIDES (Processing → Shipped → Delivered → Received) ─── */
+.tracking-bar {
+  justify-content: space-between;
+}
+
+.tracking-line {
+  width: 56px; /* narrower to fit 4 steps */
+}
+
+.tracking-received {
+  background: #2e7d52 !important;
+  border-color: #2e7d52 !important;
+  color: var(--white) !important;
+  box-shadow: 0 0 0 4px rgba(46, 125, 82, 0.15);
+}
+
+.tracking-label-received {
+  color: #2e7d52 !important;
+  font-weight: 700 !important;
+}
+
+/* ─── RECEIVED BANNER ─── */
+.received-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #d4edda;
+  color: #2e7d52;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ADD THESE RULES TO YOUR EXISTING OrderDetailsPage.css
+   ───────────────────────────────────────────────────────────────── */
+
+/* ── Refund Status Badge Colors ─────────────────────────────── */
+.status-refund-requested {
+  background: #fff3cd;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+.status-refund-approved {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.status-refunded {
+  background: #ede9fe;
+  color: #4c1d95;
+  border: 1px solid #c4b5fd;
+}
+
+/* ── Refund Status Banner (inside order modal) ───────────────── */
+.refund-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  margin: 10px 0 4px;
+}
+.refund-banner-refund-requested {
+  background: #fff8e1;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.refund-banner-refund-approved {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+.refund-banner-refunded {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border: 1px solid #c4b5fd;
+}
+
+/* ── Refund Action Buttons ───────────────────────────────────── */
+.status-action-refund-approve {
+  background: #fff3cd;
+  color: #92400e;
+  border: 1.5px solid #fcd34d;
+  transition: background 0.2s, transform 0.1s;
+}
+.status-action-refund-approve:hover:not(:disabled) {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+.status-action-refunded {
+  background: #ede9fe;
+  color: #5b21b6;
+  border: 1.5px solid #c4b5fd;
+  transition: background 0.2s, transform 0.1s;
+}
+.status-action-refunded:hover:not(:disabled) {
+  background: #ddd6fe;
+  transform: translateY(-1px);
+}
+
+/* ── Confirm Icon – Refund Variant ──────────────────────────── */
+.confirm-icon-refund {
+  background: #fff3cd;
+  color: #b45309;
+}
+
+/* ── Modal Footer Actions ────────────────────────────────────── */
+.modal-footer-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 4px 0;
+}
+
+/* ── Refund Details Button ───────────────────────────────────── */
+.refund-details-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #fcd34d;
+  background: #fff8e1;
+  color: #92400e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.refund-details-btn:hover:not(:disabled) {
+  background: #fde68a;
+  transform: translateY(-1px);
+}
+.refund-details-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Refund Details Modal ────────────────────────────────────── */
+.refund-modal-overlay { z-index: 1100; }
+.refund-details-box   { max-width: 500px; width: 95%; }
+
+.refund-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #b45309;
+}
+.refund-modal-header .material-icons { font-size: 1.5rem; }
+
+/* ── Meta Row (status + date side by side) ───────────────────── */
+.refund-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+/* ── Status Pill ─────────────────────────────────────────────── */
+.refund-detail-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.refund-status-pill {
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* ── Description field ───────────────────────────────────────── */
+.refund-desc-field {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+}
+.refund-description-text {
+  margin: 0;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #374151;
+  line-height: 1.6;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+}
+
+/* ── Refund Account Card ─────────────────────────────────────── */
+.refund-account-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0;
+}
+.refund-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.refund-account-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.refund-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.refund-account-label {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.refund-account-value {
+  font-size: 0.88rem;
+  color: #1f2937;
+  font-weight: 600;
+  text-align: right;
+}
+.refund-ewallet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+}
+.refund-ewallet-badge .material-icons { font-size: 0.95rem; }
+.refund-acct-number {
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.08em;
+  color: #374151;
+}
+
+/* ── Product Images Grid ─────────────────────────────────────── */
+.refund-images-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0;
+}
+.refund-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+.refund-image-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+}
+.refund-image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.2s;
+}
+.refund-image-thumb:hover img { transform: scale(1.06); }
+.refund-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: #fff;
+}
+.refund-image-thumb:hover .refund-thumb-overlay { opacity: 1; }
+
+/* ── Lightbox ────────────────────────────────────────────────── */
+.lightbox-overlay { z-index: 1200; background: rgba(0,0,0,0.85); }
+.lightbox-box {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-img {
+  max-width: 100%;
+  max-height: 85vh;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 10;
+}
+
+/* ── No Data ─────────────────────────────────────────────────── */
+.refund-no-data {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9ca3af;
+  font-size: 0.88rem;
+  padding: 24px 0;
+  justify-content: center;
+}
+
+/* ── Receipt Print Styles ── */
+.print-receipt-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #3d2b1f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.print-receipt-btn:hover { background: #5a3e2b; }
+
+@media print {
+  body * { visibility: hidden; }
+  #receipt-printable,
+  #receipt-printable * { visibility: visible; }
+  #receipt-printable {
+    position: fixed;
+    inset: 0;
+    padding: 32px;
+    background: #fff;
+    font-family: 'Courier New', monospace;
+    color: #000;
+  }
+  .receipt-header    { text-align: center; margin-bottom: 16px; }
+  .receipt-store     { font-size: 1.4rem; font-weight: 700; letter-spacing: 2px; }
+  .receipt-sub       { font-size: 0.8rem; color: #555; margin-top: 2px; }
+  .receipt-divider   { border: none; border-top: 1px dashed #999; margin: 12px 0; }
+  .receipt-meta      { font-size: 0.8rem; margin-bottom: 4px; }
+  .receipt-meta span { font-weight: 600; }
+  .receipt-items     { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.82rem; }
+  .receipt-items th  { text-align: left; border-bottom: 1px solid #ccc; padding: 4px 2px; font-size: 0.78rem; text-transform: uppercase; }
+  .receipt-items td  { padding: 5px 2px; vertical-align: top; }
+  .receipt-items .col-price { text-align: right; }
+  .receipt-totals    { width: 100%; font-size: 0.85rem; margin-top: 6px; }
+  .receipt-totals td { padding: 3px 2px; }
+  .receipt-totals .col-label { color: #444; }
+  .receipt-totals .col-val   { text-align: right; font-weight: 600; }
+  .receipt-grand td  { font-size: 1rem; font-weight: 700; border-top: 1px solid #000; padding-top: 6px; }
+  .receipt-footer    { text-align: center; margin-top: 20px; font-size: 0.75rem; color: #666; }
+}

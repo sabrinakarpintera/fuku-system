@@ -27,6 +27,38 @@ export default function Signup() {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
+    // ✅ Gmail validation
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
+    // ✅ PH phone validation (11 digits starting with 09)
+    const phoneRegex = /^09\d{9}$/;
+
+    const strongPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])\S{8,}$/;
+
+    if (!gmailRegex.test(form.email)) {
+      setMessage({
+        text: "Only @gmail.com email addresses are allowed.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!phoneRegex.test(form.phone)) {
+      setMessage({
+        text: "Phone number must be 11 digits and start with 09.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!strongPass.test(form.password)) {
+      setMessage({
+        text: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+        type: "error",
+      });
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
       setMessage({ text: "Passwords do not match.", type: "error" });
       return;
@@ -53,10 +85,16 @@ export default function Signup() {
         setMessage({ text: "Account created! Redirecting…", type: "success" });
         setTimeout(() => navigate("/"), 1200);
       } else {
-        setMessage({ text: data.message || "Registration failed.", type: "error" });
+        setMessage({
+          text: data.message || "Registration failed.",
+          type: "error",
+        });
       }
     } catch (err) {
-      setMessage({ text: "Network error. Please try again.", type: "error" });
+      setMessage({
+        text: "Network error. Please try again.",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -85,6 +123,7 @@ export default function Signup() {
               onChange={handleChange}
               required
             />
+
             <input
               type="text"
               name="username"
@@ -99,17 +138,20 @@ export default function Signup() {
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="example@gmail.com"
               value={form.email}
               onChange={handleChange}
               required
             />
+
             <input
               type="tel"
               name="phone"
-              placeholder="Contact Number"
+              placeholder="09XXXXXXXXX"
               value={form.phone}
               onChange={handleChange}
+              pattern="09\d{9}"
+              maxLength="11"
               required
             />
           </div>
@@ -123,6 +165,7 @@ export default function Signup() {
               onChange={handleChange}
               required
             />
+
             <input
               type="password"
               name="confirmPassword"
@@ -145,7 +188,11 @@ export default function Signup() {
 
           <p>
             Already have an account?{" "}
-            <button type="button" className="login" onClick={() => navigate("/")}>
+            <button
+              type="button"
+              className="login"
+              onClick={() => navigate("/")}
+            >
               Login
             </button>
           </p>
@@ -154,7 +201,11 @@ export default function Signup() {
       </div>
 
       <div className="bg">
-        <img src={bgImage} alt="Man & Woman Shopping" className="bg-illustration" />
+        <img
+          src={bgImage}
+          alt="Man & Woman Shopping"
+          className="bg-illustration"
+        />
       </div>
 
     </div>

@@ -53,25 +53,28 @@ if ($action === 'send_otp') {
     $del->execute();
     $del->close();
 
-    $otp = trim(str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT));
-    $expires_at = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+    $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-    $ins = $conn->prepare("INSERT INTO password_resets (email, otp, expires_at) VALUES (?, ?, ?)");
-    $ins->bind_param("sss", $email, $otp, $expires_at);
+    // ✅ Let MySQL set the expiry so both INSERT and NOW() use the same clock
+    $ins = $conn->prepare(
+        "INSERT INTO password_resets (email, otp, expires_at)
+         VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 10 MINUTE))"
+    );
+    $ins->bind_param("ss", $email, $otp);
     $ins->execute();
     $ins->close();
 
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';       
+        $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'csbln10@gmail.com';        
-        $mail->Password   = 'ecil uaak xroe nwqh';     
+        $mail->Username   = 'csbln10@gmail.com';
+        $mail->Password   = 'luys yjdh ezed hcco';
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
-        $mail->setFrom('csbln10@gmail.com', 'Fuku');
+        $mail->setFrom('csbln10@gmail.com', 'FUKU STORE');
         $mail->addAddress($email, $row['username']);
 
         $mail->isHTML(true);
@@ -93,7 +96,6 @@ if ($action === 'send_otp') {
         echo json_encode(["success" => true, "message" => "OTP sent to your email."]);
 
     } catch (Exception $e) {
-
         $del2 = $conn->prepare("DELETE FROM password_resets WHERE email = ?");
         $del2->bind_param("s", $email);
         $del2->execute();

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import "./style/AdminDashboard1.css";
 import logoImage from "../assets/fuku-logo.png";
 
-
 const statusColors = {
   Delivered: "status-delivered",
   Shipped: "status-shipped",
@@ -12,45 +11,79 @@ const statusColors = {
 };
 
 export default function AdminDashboard() {
-
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
 
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const handleDownloadPDF = () => {
+  const existing = document.getElementById("dashboard-printable");
+  if (existing) existing.remove();
 
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "long", day: "numeric", year: "numeric",
+  });
+
+  const cards = [
+    { label: "Total Sales",     value: `₱${stats.totalSales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}` },
+    { label: "Total Customers", value: stats.totalCustomers },
+    { label: "Total Orders",    value: stats.totalOrders },
+    { label: "Pending Orders",  value: stats.pendingOrders },
+    { label: "Daily Sales",     value: `₱${stats.dailySales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}` },
+  ];
+
+  const cardHTML = cards.map((c) => `
+    <div class="dash-print-card">
+      <div class="dash-print-card-label">${c.label}</div>
+      <div class="dash-print-card-value">${c.value}</div>
+    </div>
+  `).join("");
+
+  const div = document.createElement("div");
+  div.id = "dashboard-printable";
+  div.innerHTML = `
+    <div class="dash-print-header">
+      <div class="dash-print-store">FUKU</div>
+      <div class="dash-print-sub">Dashboard Report</div>
+    </div>
+    <div class="dash-print-date">Generated: ${today}</div>
+    <hr class="dash-print-divider" />
+    <div class="dash-print-grid">${cardHTML}</div>
+    <hr class="dash-print-divider" />
+    <div class="dash-print-footer">Fuku Admin Dashboard · Confidential</div>
+  `;
+
+  document.body.appendChild(div);
+  window.print();
+  setTimeout(() => div.remove(), 1000);
+};
 
   const navItems = [
-    { label: "Home", icon: HomeIcon, onClick: () => navigate("/admin/dashboard") },
-    
+    { label: "Home",           icon: HomeIcon,    onClick: () => navigate("/admin/dashboard")   },
     { label: "Product Listed", icon: ProductIcon, onClick: () => navigate("/admin/productlist") },
-    { label: "Order Details", icon: OrderIcon, onClick: () => navigate("/admin/orderdetails") },
+    { label: "Order Details",  icon: OrderIcon,   onClick: () => navigate("/admin/orderdetails")},
   ];
 
   useEffect(() => {
-
     fetch("http://localhost/Fuku/src/api/admin_dashboard.php")
       .then(res => res.json())
       .then(data => {
-
         if (data.success) {
           setStats(data.stats);
           setOrders(data.orders);
         }
-
         setLoading(false);
       })
       .catch(err => {
         console.error(err);
         setLoading(false);
       });
-
   }, []);
 
   return (
@@ -58,7 +91,7 @@ export default function AdminDashboard() {
       <header className="admin-header">
         <div className="admin-header-inner">
           <span className="logo">
-            <img src={logoImage} alt="Fuku Logo"/>
+            <img src={logoImage} alt="Fuku Logo" />
           </span>
           <nav className="admin-nav">
             {navItems.map((item) => (
@@ -85,6 +118,7 @@ export default function AdminDashboard() {
             stats={stats}
             orders={orders}
             onView={(o) => setSelectedOrder(o)}
+            onDownloadPDF={handleDownloadPDF}
           />
         )}
       </main>
@@ -96,21 +130,43 @@ export default function AdminDashboard() {
   );
 }
 
-function HomePage({ stats, orders, onView }) {
+// ── Added onDownloadPDF prop ──────────────────────────────────────────────────
+function HomePage({ stats, orders, onView, onDownloadPDF }) {
   const recentOrders = orders.slice(0, 5);
+
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
     <div className="page-home">
       <div className="page-title-row">
-        <h1 className="page-title">Dashboard</h1>
-        <span className="page-date">April 28, 2026</span>
+        <div>
+          <h1 className="page-title">Dashboard</h1>
+          <span className="page-date">{today}</span>
+        </div>
+
+        {/* ── Download PDF button ── */}
+        <button className="download-pdf-btn" onClick={onDownloadPDF}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" strokeWidth="2.5"
+               strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download PDF
+        </button>
       </div>
 
       <div className="stats-grid">
-        <StatCard label="Total Sales" value={`₱${stats.totalSales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`} icon={<SalesIcon />} accent="accent-brown" />
-        <StatCard label="Total Customers" value={stats.totalCustomers} icon={<CustomersIcon />} accent="accent-sage" />
-        <StatCard label="Total Orders" value={stats.totalOrders} icon={<OrderIcon />} accent="accent-blush" />
-        <StatCard label="Pending Orders" value={stats.pendingOrders} icon={<PendingIcon />} accent="accent-amber" />
-        <StatCard label="Daily Sales" value={`₱${stats.dailySales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`} icon={<DailyIcon />} accent="accent-teal" />
+        <StatCard label="Total Sales"     value={`₱${stats.totalSales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`} icon={<SalesIcon />}     accent="accent-brown" />
+        <StatCard label="Total Customers" value={stats.totalCustomers}                                                           icon={<CustomersIcon />}  accent="accent-sage"  />
+        <StatCard label="Total Orders"    value={stats.totalOrders}                                                              icon={<OrderIcon />}      accent="accent-blush" />
+        <StatCard label="Pending Orders"  value={stats.pendingOrders}                                                            icon={<PendingIcon />}    accent="accent-amber" />
+        <StatCard label="Daily Sales"     value={`₱${stats.dailySales.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`}  icon={<DailyIcon />}      accent="accent-teal"  />
       </div>
 
       <div className="section-card">
@@ -237,12 +293,8 @@ function OrderModal({ order, onClose }) {
   );
 }
 
-
 function HomeIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>;
-}
-function AddIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>;
 }
 function ProductIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>;

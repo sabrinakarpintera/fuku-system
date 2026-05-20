@@ -43,6 +43,7 @@ body {
   min-height: 100vh;
 }
 
+/* ─── HEADER ─── */
 .admin-header {
   background: var(--beige-card);
   border-bottom: 1px solid var(--beige-border);
@@ -52,7 +53,6 @@ body {
   box-shadow: var(--shadow-sm);
   width: 100vw;
   padding: 1rem;
-  
 }
 
 .admin-header-inner {
@@ -70,14 +70,12 @@ body {
   margin-top: 1rem;
   margin-bottom: 1rem;
   align-self: center;
-  
 }
 
 .logo img {
   width: 100%;
   height: auto;
 }
-
 
 .admin-nav {
   display: flex;
@@ -140,6 +138,7 @@ body {
   border-color: var(--status-cancelled-fg);
 }
 
+/* ─── MAIN LAYOUT ─── */
 .admin-main {
   max-width: 1200px;
   margin: 0 auto;
@@ -166,6 +165,7 @@ body {
   font-weight: 400;
 }
 
+/* ─── STATS GRID (Dashboard only, harmless to keep shared) ─── */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -234,6 +234,7 @@ body {
   letter-spacing: -0.3px;
 }
 
+/* ─── SECTION CARD ─── */
 .section-card {
   background: var(--beige-card);
   border: 1px solid var(--beige-border);
@@ -253,6 +254,7 @@ body {
   margin-bottom: 16px;
 }
 
+/* ─── TABLE ─── */
 .orders-table {
   width: 100%;
   border-collapse: collapse;
@@ -278,13 +280,8 @@ body {
   border-bottom: 1px solid var(--beige-border);
 }
 
-.order-row:last-child td {
-  border-bottom: none;
-}
-
-.order-row:hover td {
-  background: #f7f2ec;
-}
+.order-row:last-child td { border-bottom: none; }
+.order-row:hover td { background: #f7f2ec; }
 
 .order-id {
   font-weight: 600;
@@ -292,34 +289,9 @@ body {
   font-size: 13px;
 }
 
-.order-total {
-  font-weight: 600;
-}
+.order-total { font-weight: 600; }
 
-.action-cell {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.action-view {
-  padding: 6px 16px;
-  border: 1.5px solid var(--brown-dark);
-  background: transparent;
-  color: var(--brown-dark);
-  font-family: 'Outfit', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.action-view:hover {
-  background: var(--brown-dark);
-  color: var(--white);
-}
-
+/* ─── STATUS BADGES ─── */
 .status-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -333,41 +305,7 @@ body {
 .status-processing { background: var(--status-processing-bg); color: var(--status-processing-fg); }
 .status-cancelled  { background: var(--status-cancelled-bg);  color: var(--status-cancelled-fg); }
 
-.filter-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  padding: 8px 20px;
-  border: 1.5px solid var(--beige-border);
-  background: var(--beige-card);
-  color: var(--text-mid);
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.filter-btn:hover {
-  border-color: var(--brown-light);
-  color: var(--brown-dark);
-}
-
-.filter-btn--active {
-  background: var(--brown-dark);
-  color: var(--white);
-  border-color: var(--brown-dark);
-}
-
-.page-orders {
-  animation: fadeUp 0.3s ease;
-}
-
+/* ─── MODAL BASE ─── */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -412,9 +350,7 @@ body {
   transition: background 0.15s;
 }
 
-.modal-close:hover {
-  background: var(--beige-border);
-}
+.modal-close:hover { background: var(--beige-border); }
 
 .modal-title {
   font-size: 22px;
@@ -498,9 +434,7 @@ body {
   z-index: 0;
 }
 
-.tracking-line-done {
-  background: var(--brown-dark);
-}
+.tracking-line-done { background: var(--brown-dark); }
 
 .cancelled-badge-large {
   display: inline-block;
@@ -513,7 +447,7 @@ body {
   margin-bottom: 4px;
 }
 
-/* ─── MODAL CUSTOMER ─── */
+/* ─── MODAL CONTENT ─── */
 .modal-customer-row {
   display: flex;
   justify-content: space-between;
@@ -532,7 +466,6 @@ body {
   color: var(--brown-dark);
 }
 
-/* ─── MODAL PRODUCTS ─── */
 .modal-products {
   display: flex;
   flex-direction: column;
@@ -551,6 +484,21 @@ body {
   border-radius: 10px;
   background: #e8ddd4;
   flex-shrink: 0;
+}
+
+.modal-product-img-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e8ddd4;
+}
+
+.modal-product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .modal-product-info {
@@ -577,7 +525,6 @@ body {
   color: var(--brown-dark);
 }
 
-/* ─── MODAL SUMMARY ─── */
 .modal-summary {
   display: flex;
   flex-direction: column;
@@ -598,9 +545,7 @@ body {
   max-width: 280px;
 }
 
-.modal-address {
-  font-size: 13px !important;
-}
+.modal-address { font-size: 13px !important; }
 
 .modal-total-row {
   display: flex;
@@ -620,11 +565,53 @@ body {
   color: var(--brown-dark);
 }
 
-/* ─── BLANK PAGE ─── */
+/* ─── MISC ─── */
 .blank-page {
   min-height: 400px;
   display: flex;
   align-items: flex-start;
+}
+
+/* ── PDF / Print styles ── */
+.download-pdf-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #3d2b1f;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.download-pdf-btn:hover { background: #5a3e2b; }
+.download-pdf-btn svg  { flex-shrink: 0; }
+
+@media print {
+  body * { visibility: hidden; }
+  #dashboard-printable,
+  #dashboard-printable * { visibility: visible; }
+  #dashboard-printable {
+    position: fixed;
+    inset: 0;
+    padding: 40px;
+    background: #fff;
+    color: #000;
+    font-family: 'Courier New', monospace;
+  }
+  .dash-print-header    { text-align: center; margin-bottom: 24px; }
+  .dash-print-store     { font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; }
+  .dash-print-sub       { font-size: 0.85rem; color: #555; margin-top: 4px; }
+  .dash-print-divider   { border: none; border-top: 1px dashed #999; margin: 16px 0; }
+  .dash-print-date      { font-size: 0.8rem; color: #666; text-align: right; margin-bottom: 16px; }
+  .dash-print-grid      { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .dash-print-card      { border: 1px solid #ccc; border-radius: 8px; padding: 16px; text-align: center; }
+  .dash-print-card-label{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 6px; }
+  .dash-print-card-value{ font-size: 1.4rem; font-weight: 700; color: #000; }
+  .dash-print-footer    { text-align: center; margin-top: 32px; font-size: 0.75rem; color: #888; }
 }
 
 /* ─── ANIMATIONS ─── */
@@ -644,284 +631,3 @@ body {
 }
 
 .page-home { animation: fadeUp 0.3s ease; }
-/* ── Status Actions Section ── */
-.status-actions-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 4px 0;
-}
-
-.status-actions-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.status-actions-label .material-icons {
-  font-size: 15px;
-}
-
-.status-actions-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* ── Base Status Action Button ── */
-.status-action-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-}
-
-.status-action-btn:hover:not(:disabled) {
-  opacity: 0.88;
-  transform: translateY(-1px);
-}
-
-.status-action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.status-action-btn .material-icons {
-  font-size: 17px;
-}
-
-/* Shipped */
-.status-action-ship {
-  background: #e8f4fd;
-  color: #1565c0;
-}
-
-/* Delivered */
-.status-action-deliver {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-/* Cancel */
-.status-action-cancel {
-  background: #fdecea;
-  color: #c62828;
-}
-
-/* ── Confirm Dialog ── */
-.confirm-overlay {
-  z-index: 1200;
-}
-
-.confirm-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 32px 28px 24px;
-  max-width: 380px;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-}
-
-.confirm-icon-wrap {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 4px;
-}
-
-.confirm-icon-wrap .material-icons {
-  font-size: 30px;
-}
-
-.confirm-icon-proceed {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-
-.confirm-icon-cancel {
-  background: #fdecea;
-  color: #c62828;
-}
-
-.confirm-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #1a1a2e;
-  text-align: center;
-  margin: 0;
-}
-
-.confirm-desc {
-  font-size: 0.875rem;
-  color: #666;
-  text-align: center;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.confirm-actions {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  margin-top: 8px;
-}
-
-.confirm-btn-no {
-  flex: 1;
-  padding: 10px;
-  border: 1.5px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  color: #555;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.confirm-btn-no:hover:not(:disabled) {
-  background: #f5f5f5;
-}
-
-.confirm-btn-yes {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #1a1a2e;
-  color: #fff;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  transition: opacity 0.2s;
-}
-
-.confirm-btn-yes:hover:not(:disabled) {
-  opacity: 0.85;
-}
-
-.confirm-btn-yes--danger {
-  background: #c62828;
-}
-
-.confirm-btn-yes:disabled,
-.confirm-btn-no:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ── Payment Verify (existing, kept) ── */
-.modal-payment-verify-row {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 8px;
-}
-
-.payment-verify-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: #1a1a2e;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 9px 16px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.payment-verify-btn:hover { background: #16213e; }
-.payment-verify-btn .material-icons { font-size: 18px; }
-
-.payment-verify-overlay { z-index: 1100; }
-.payment-verify-box { max-width: 460px; width: 100%; }
-
-.payment-verify-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.payment-verify-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin: 12px 0;
-}
-
-.payment-verify-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.payment-verify-value {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1a1a2e;
-  padding-left: 4px;
-}
-
-.payment-verify-proof {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.payment-verify-img-wrap {
-  border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #f9fafb;
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.payment-verify-img {
-  width: 100%;
-  max-height: 380px;
-  object-fit: contain;
-  display: block;
-}
-
-.payment-verify-img-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: #aaa;
-  font-size: 0.85rem;
-  padding: 40px 0;
-}
