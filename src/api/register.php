@@ -5,7 +5,6 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json");
 
-// Handle preflight request (IMPORTANT)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
@@ -31,7 +30,6 @@ $email    = trim($data['email']    ?? '');
 $phone    = trim($data['phone']    ?? '');
 $password = $data['password']      ?? '';
 
-// Basic validation
 if (!$name || !$username || !$email || !$phone || !$password) {
     http_response_code(400);
     die(json_encode(["success" => false, "message" => "All fields are required"]));
@@ -44,11 +42,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-// Start transaction so both inserts succeed or both roll back
 $conn->begin_transaction();
 
 try {
-    // Step 1: Insert into users (no email/phone — those go to user_details)
     $stmt1 = $conn->prepare(
         "INSERT INTO users (name, username, password) VALUES (?, ?, ?)"
     );
@@ -58,7 +54,6 @@ try {
 
     $new_user_id = $conn->insert_id;
 
-    // Step 2: Insert email & phone into user_details
     $stmt2 = $conn->prepare(
         "INSERT INTO user_details (user_id, email, phone) VALUES (?, ?, ?)"
     );
@@ -78,8 +73,10 @@ try {
 } catch (Exception $e) {
     $conn->rollback();
 
-    // Duplicate username triggers a unique key violation (errno 1062)
-    if ($conn->errno === 1062) {
+    // ✅ FIXED: $conn->errno is reset after rollback(), so we can no longer
+    // rely on it. Check the exception message for MySQL error code 1062
+    // (duplicate entry / unique key violation) instead.
+    if (str_contains($e->getMessage(), '1062')) {
         http_response_code(409);
         echo json_encode(["success" => false, "message" => "Username already exists"]);
     } else {

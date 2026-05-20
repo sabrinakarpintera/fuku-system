@@ -27,12 +27,8 @@ export default function Signup() {
     e.preventDefault();
     setMessage({ text: "", type: "" });
 
-    // ✅ Gmail validation
     const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-
-    // ✅ PH phone validation (11 digits starting with 09)
     const phoneRegex = /^09\d{9}$/;
-
     const strongPass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])\S{8,}$/;
 
     if (!gmailRegex.test(form.email)) {
@@ -67,7 +63,8 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://fuku-system.rf.gd/api/register.php", {
+      // ✅ FIXED: Changed http:// to https:// to prevent Mixed Content blocking
+      const response = await fetch("https://fuku-system.rf.gd/api/register.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -78,6 +75,15 @@ export default function Signup() {
           password: form.password,
         }),
       });
+
+      // ✅ FIXED: Check if the response is actually JSON before parsing.
+      // InfinityFree sometimes returns an HTML challenge page instead of JSON,
+      // which would cause response.json() to throw and show a misleading
+      // "Network error" message. This gives a clearer error instead.
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Server returned an unexpected response. If this persists, the hosting provider may be intercepting API requests.");
+      }
 
       const data = await response.json();
 
@@ -92,7 +98,7 @@ export default function Signup() {
       }
     } catch (err) {
       setMessage({
-        text: "Network error. Please try again.",
+        text: err.message || "Network error. Please try again.",
         type: "error",
       });
     } finally {
