@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./style/editProduct.css";
+import "./style/EditProduct.css";
 import logoImage from "../assets/fuku-logo.png";
 
 const Icon = ({ name }) => <span className="material-icons">{name}</span>;
