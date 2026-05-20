@@ -17,7 +17,7 @@ function MyCart() {
   const [checked, setChecked] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost/Fuku/src/api/get_cart.php", {
+    fetch("http://fuku-system.rf.gd/api/get_cart.php", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -79,7 +79,7 @@ function MyCart() {
       return;
     }
 
-    await fetch("http://localhost/Fuku/src/api/delete_cart.php", {
+    await fetch("http://fuku-system.rf.gd/api/delete_cart.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -148,7 +148,7 @@ function MyCart() {
             />
             <div className="product-info1">
               <img
-                src={`http://localhost/Fuku/src/api/${item.image}`}
+                src={`http://fuku-system.rf.gd/api/${item.image}`}
                 alt="product"
                 className="product-img1"
               />

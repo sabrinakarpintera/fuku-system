@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./style/MyAccount.css";
 
-const API = "http://localhost/fuku/src/api";
+const API = "http://fuku-system.rf.gd/api/";
 
 const fetchJSON = async (url, options = {}) => {
   try {

@@ -97,7 +97,7 @@ export default function AddProduct() {
     formData.append("image", image);
 
     try {
-      const res = await fetch("http://localhost/Fuku/src/api/add_product.php", {
+      const res = await fetch("http://fuku-system.rf.gd/api/add_product.php", {      
         method: "POST",
         body: formData,
       });

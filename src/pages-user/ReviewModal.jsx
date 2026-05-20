@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./style/ReviewModal.css";
 
-const BASE_URL = "http://localhost/Fuku/src/api/";
+const BASE_URL = "http://fuku-system.rf.gd/api/";
 
 function resolveImage(raw) {
   if (!raw) return null;

@@ -71,7 +71,7 @@ export default function AdminDashboard() {
   ];
 
   useEffect(() => {
-    fetch("http://localhost/Fuku/src/api/admin_dashboard.php")
+    fetch("http://fuku-system.rf.gd/api/admin_dashboard.php")
       .then(res => res.json())
       .then(data => {
         if (data.success) {

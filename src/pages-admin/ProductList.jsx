@@ -57,7 +57,7 @@ export default function ProductList() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res  = await fetch("http://localhost/Fuku/src/api/ad_get_products.php");
+      const res  = await fetch("http://fuku-system.rf.gd/api/ad_get_products.php");
       const data = await res.json();
       setProducts(data);
     } catch (err) { console.error(err); }
@@ -70,7 +70,7 @@ export default function ProductList() {
     setActiveSize(null);
     setActiveColor(null);
     try {
-      const res  = await fetch(`http://localhost/Fuku/src/api/ad_get_product.php?id=${id}`);
+      const res  = await fetch(`http://fuku-system.rf.gd/api/ad_get_product.php?id=${id}`);
       const data = await res.json();
       setSelected(data);
     } catch (err) { console.error(err); }
@@ -85,7 +85,7 @@ export default function ProductList() {
 
   const handleDelete = async (id) => {
     try {
-      const res  = await fetch("http://localhost/Fuku/src/api/delete_product.php", {
+      const res  = await fetch("http://fuku-system.rf.gd/api/delete_product.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
@@ -218,7 +218,7 @@ export default function ProductList() {
                 <div className="pl-card" key={p.id} onClick={() => openDetail(p.id)}>
                   <div className="pl-card-img-wrap">
                     <img
-                      src={`http://localhost/Fuku/src/api/${p.image}`}
+                      src={`http://fuku-system.rf.gd/api/${p.image}`}
                       alt={p.name}
                       className="pl-card-img"
                     />
@@ -251,7 +251,7 @@ export default function ProductList() {
                   <div className="pm-top">
                     <div className="pm-img-wrap">
                       <img
-                        src={`http://localhost/Fuku/src/api/${selected.image}`}
+                        src={`http://fuku-system.rf.gd/api/${selected.image}`}
                         alt={selected.name}
                         className="pm-img"
                       />

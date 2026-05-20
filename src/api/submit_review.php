@@ -1,28 +1,15 @@
 <?php
-/**
- * submit_review.php
- * Inserts reviews for each item in a completed order.
- * Resolves product_id from order_items.product_id (added via migration.sql).
- *
- * POST body (JSON):
- * {
- *   "order_id": 42,          ← orders.id  (integer)
- *   "user_id":  7,
- *   "reviews": [
- *     { "product_name": "Fuku Tee", "rating": 5, "comment": "Love it!", "color": "Black", "size": "M" },
- *     ...
- *   ]
- * }
- */
 
-header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json");
 
-if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-    http_response_code(204);
-    exit;
+// Handle preflight request (IMPORTANT)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {

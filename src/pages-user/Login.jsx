@@ -4,7 +4,7 @@ import "./style/Signup.css";
 import logoImage from "../assets/fuku-logo.png";
 import bgImage from "../assets/fuku-bg.png";
 
-const API = "http://localhost/Fuku/src/api/forgot_password.php";
+const API = "http://fuku-system.rf.gd/api/forgot_password.php";
 
 // ── Forgot Password Modal ──────────────────────────────────────
 function ForgotPasswordModal({ onClose }) {
@@ -284,7 +284,7 @@ export default function Login() {
   setMessage("");
 
   try {
-    const response = await fetch("http://localhost/Fuku/src/api/login.php", {
+    const response = await fetch("http://fuku-system.rf.gd/api/login.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

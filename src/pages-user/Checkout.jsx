@@ -5,7 +5,7 @@ import QR from "../assets/qrcode.jpg";
 import gcash from "../assets/gcash.png";
 import maya from "../assets/maya.png";
 
-const API = "http://localhost/Fuku/src/api";
+const API = "http://fuku-system.rf.gd/api";
 
 const SHIPPING_FEES = {
   "NCR - National Capital Region":          50,

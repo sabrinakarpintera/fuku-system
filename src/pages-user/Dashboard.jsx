@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./style/Shop.css";
 import logoImage from "../assets/fuku-logo.png";
 
-const API = "http://localhost/Fuku/src/api";
+const API = "http://fuku-system.rf.gd/api/";
 
 // ── Price formatter: ₱0,000.00 ───────────────────────────────────────────────
 const formatPrice = (amount) =>

@@ -67,7 +67,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost/Fuku/src/api/register.php", {
+      const response = await fetch("http://fuku-system.rf.gd/api/register.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

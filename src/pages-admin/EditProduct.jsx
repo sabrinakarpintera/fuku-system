@@ -53,7 +53,7 @@ export default function EditProduct() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res  = await fetch(`http://localhost/Fuku/src/api/ad_get_product.php?id=${id}`);
+        const res  = await fetch(`http://fuku-system.rf.gd/api/ad_get_product.php?id=${id}`);
         const data = await res.json();
 
         setProduct({
@@ -64,7 +64,7 @@ export default function EditProduct() {
         });
 
         setExistingImage(data.image ?? "");
-        setPreviewUrl(`http://localhost/Fuku/src/api/${data.image}`);
+        setPreviewUrl(`http://fuku-system.rf.gd/api/${data.image}`);
 
         // Restore size/color inputs from existing variants
         if (data.variants?.length > 0) {
@@ -133,7 +133,7 @@ export default function EditProduct() {
     if (newImage) formData.append("image", newImage);
 
     try {
-      const res  = await fetch("http://localhost/Fuku/src/api/update_product.php", {
+      const res  = await fetch("http://fuku-system.rf.gd/api/update_product.php", {
         method: "POST",
         body:   formData,
       });

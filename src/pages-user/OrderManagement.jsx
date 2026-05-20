@@ -4,7 +4,7 @@ import ReviewModal from "./ReviewModal";
 
 const STEPS = ["Processing", "Shipped", "Delivered"];
 
-const BASE_URL = "http://localhost/Fuku/src/api/";
+const BASE_URL = "http://fuku-system.rf.gd/api/";
 
 const STATUS_CLASS = {
   Delivered:          "badge-delivered",

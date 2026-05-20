@@ -83,7 +83,7 @@ export default function OrderDetailsPage() {
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = () => {
-    fetch("http://localhost/Fuku/src/api/get_orders.php")
+    fetch("http://fuku-system.rf.gd/api/get_orders.php")
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error(err));
@@ -234,7 +234,7 @@ function OrderModal({ order, onClose, onStatusUpdate }) {
   useEffect(() => {
     if (!isRefundStatus) return;
     setRefundLoading(true);
-    fetch(`http://localhost/Fuku/src/api/get_refund_details.php?order_code=${order.id}`)
+    fetch(`http://fuku-system.rf.gd/api/get_refund_details.php?order_code=${order.id}`)
       .then((res) => res.json())
       .then((data) => setRefundDetails(data.refund ?? null))
       .catch((err) => console.error("Refund fetch error:", err))
@@ -243,7 +243,7 @@ function OrderModal({ order, onClose, onStatusUpdate }) {
 
   const handleStatusChange = (nextStatus) => {
     setUpdating(true);
-    fetch("http://localhost/Fuku/src/api/update_order_status.php", {
+    fetch("http://fuku-system.rf.gd/api/update_order_status.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: order.id, status: nextStatus }),
@@ -422,7 +422,7 @@ function OrderModal({ order, onClose, onStatusUpdate }) {
               <div key={i} className="modal-product-row">
                 <div className="modal-product-img-wrap">
                   <img
-                    src={`http://localhost/Fuku/src/api/${p.image}`}
+                    src={`http://fuku-system.rf.gd/api/${p.image}`}
                     alt={p.name}
                     className="modal-product-img"
                     onError={(e) => {
