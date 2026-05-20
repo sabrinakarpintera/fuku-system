@@ -4,7 +4,7 @@ import Login from "./pages-user/Login";
 import Signup from "./pages-user/Signup";
 
 import Dashboard from "./pages-user/Dashboard";
-import Mycart from "./pages-user/Mycart";
+import Mycart from "./pages-user/MyCart";
 import MyAccount from "./pages-user/MyAccount";
 import OrderManagement from "./pages-user/OrderManagement";
 import Checkout from "./pages-user/Checkout";
@@ -37,7 +37,7 @@ function App() {
         }
       >
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="mycart" element={<Mycart />} />
+        <Route path="mycart" element={<MyCart />} />
         <Route path="myaccount" element={<MyAccount />} />
         <Route path="ordermanagement" element={<OrderManagement />} />
         <Route path="checkout" element={<Checkout />} />
